@@ -16,10 +16,12 @@ public class BoardView extends View {
 
 	int width = getWidth();
 	int height = getHeight();
-	
-	public int x, y;
+	int size;
 
-	private Paint paint, one, note;
+	public int x, y;
+	public boolean d;
+
+	private Paint paint, one, two, note;
 
 	protected boolean running = false;
 
@@ -37,13 +39,19 @@ public class BoardView extends View {
 		paint.setStrokeWidth(3);
 
 		one = new Paint();
-		one.setColor(0x7799BBAA);
+		one.setColor(0x7700BBAA);
 		one.setStyle(Style.FILL);
 
+		two = new Paint();
+		two.setColor(0x77AA00BB);
+		two.setStyle(Style.FILL);
+
 		note = new Paint();
-		note.setColor(0xffFF0000);
+		note.setColor(0x44FF0000);
 		note.setStyle(Style.FILL_AND_STROKE);
-		
+
+		size = MainActivity.game.size;
+
 	}
 
 	@Override
@@ -61,24 +69,45 @@ public class BoardView extends View {
 		running = b;
 	}
 
+	public void ghostTile(Canvas canvas, int i, int j) {
+		tile.getPaint().set(note);
+
+		tile.setBounds((i * width) / size, (j * width) / size,
+				((i + 1) * width) / size, ((j + 1) * width) / size);
+
+		tile.draw(canvas);
+	}
+
 	protected void drawTiles(Canvas canvas) {
-		int t[][] = (int[][]) this.getTag(R.id.boardview);
+		int t[][] = MainActivity.game.tiles;
 
-		tile.getPaint().set(one);
+		for (int i = 0; i < size; i++) {
 
-		for (int i = 0; i < 10; i++) {
-
-			for (int j = 0; j < 10; j++) {
+			for (int j = 0; j < size; j++) {
 
 				if (t[j][i] == 1) {
 
-					tile.setBounds((i * width) / 10, (j * width) / 10,
-							((i + 1) * width) / 10, ((j + 1) * width) / 10);
+					tile.getPaint().set(one);
+
+					tile.setBounds((i * width) / size, (j * width) / size,
+							((i + 1) * width) / size, ((j + 1) * width) / size);
 
 					tile.draw(canvas);
 
 				}
-//				canvas.drawText(Integer.toString(t[j][i]), i * width	/ 10, j * width / 10, note);
+
+				if (t[j][i] == 2) {
+
+					tile.getPaint().set(two);
+
+					tile.setBounds((i * width) / size, (j * width) / size,
+							((i + 1) * width) / size, ((j + 1) * width) / size);
+
+					tile.draw(canvas);
+
+				}
+				// canvas.drawText(Integer.toString(t[j][i]), i * width / 10, j
+				// * width / 10, note);
 
 			}
 		}
@@ -89,14 +118,19 @@ public class BoardView extends View {
 
 		board.draw(canvas);
 
-		for (int i = 0; i <= 10; i++) {
-			canvas.drawLine((width * i) / 10, 0, (width * i) / 10, width, paint);
-			canvas.drawLine(0, (width * i) / 10, width, (width * i) / 10, paint);
+		for (int i = 0; i <= size; i++) {
+			canvas.drawLine((width * i) / size, 0, (width * i) / size, width,
+					paint);
+			canvas.drawLine(0, (width * i) / size, width, (width * i) / size,
+					paint);
 		}
-		
-		canvas.drawText(Integer.toString(x)+" "+Integer.toString(y)+" "+Integer.toString(width), width/2, width/2, note);
-		
+
+		canvas.drawText(Integer.toString(x) + " " + Integer.toString(y) + " "
+				+ Integer.toString(width), width / 2, width / 2, note);
+
 		drawTiles(canvas);
+		if(d)
+			ghostTile(canvas, x * size / width, y *  size / width);
 
 	}
 

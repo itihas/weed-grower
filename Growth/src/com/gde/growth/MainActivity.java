@@ -3,7 +3,6 @@ package com.gde.growth;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.DragEvent;
@@ -13,7 +12,8 @@ import android.view.View.DragShadowBuilder;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 public class MainActivity extends Activity {
 
@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		game = new GameLogic(1);
+		game = new GameLogic(2, 20);
 
 		setContentView(R.layout.activity_main);
 
@@ -42,25 +42,27 @@ public class MainActivity extends Activity {
 			@SuppressLint("NewApi")
 			public void run() {
 				count++;
-				findViewById(R.id.boardview).setTag(R.id.boardview, game.tiles);
+				game.boardUpdate();
 				findViewById(R.id.boardview).postInvalidate();
 				boardHandler.postDelayed(this, 1100);
-				game.boardUpdate();
 
 			}
 		});
 
 		setS(new Runnable() {
 			public void run() {
-				sproutHandler.postDelayed(this, 3000);
-				game.sproutUpdate();
+				sproutHandler.postDelayed(this, 5000);
+				View view = findViewById(R.id.myimage1);
+				ImageView view2 = new ImageView(view.getContext());
+				view2.setOnTouchListener(new MyTouchListener());
+				view2.setImageResource(R.drawable.petal);
+				((RelativeLayout) view.getParent()).addView(view2);
 			}
 		});
 
 		boardThread = new Thread(b);
 		sproutThread = new Thread(s);
 
-		findViewById(R.id.myimage1).setOnTouchListener(new MyTouchListener());
 		findViewById(R.id.boardview).setOnDragListener(new BoardDragListener());
 		findViewById(R.id.testlist).setOnDragListener(new SproutDragListener());
 
@@ -68,9 +70,21 @@ public class MainActivity extends Activity {
 	}
 
 	public void startGame() {
+		game.setTile(3, 3, 1);
 		game.setTile(4, 4, 1);
-		game.setTile(4, 5, 1);
-		game.setTile(4, 3, 1);
+		game.setTile(4, 6, 1);
+		game.setTile(5, 5, 1);
+		game.setTile(6, 4, 1);
+		game.setTile(6, 6, 1);
+		game.setTile(7, 7, 1);
+
+		game.setTile(13, 13, 2);
+		game.setTile(14, 14, 2);
+		game.setTile(14, 16, 2);
+		game.setTile(15, 15, 2);
+		game.setTile(16, 14, 2);
+		game.setTile(16, 16, 2);
+		game.setTile(17, 17, 2);
 
 		boardThread.start();
 
@@ -117,8 +131,6 @@ public class MainActivity extends Activity {
 		@Override
 		public boolean onDrag(View v, DragEvent event) {
 
-			int action = event.getAction();
-
 			BoardView container = (BoardView) v;
 
 			switch (event.getAction()) {
@@ -126,31 +138,37 @@ public class MainActivity extends Activity {
 				// do nothing
 				break;
 			case DragEvent.ACTION_DRAG_ENTERED:
+				container.d = true;
 				x = event.getX();
 				y = event.getY();
 				container.x = (int) x;
 				container.y = (int) y;
-				
+				container.postInvalidate();
+
 				break;
 			case DragEvent.ACTION_DRAG_EXITED:
+				container.d = false;
 				break;
 			case DragEvent.ACTION_DRAG_LOCATION:
 				x = event.getX();
 				y = event.getY();
 				container.x = (int) x;
 				container.y = (int) y;
+				container.postInvalidate();
 				break;
 			case DragEvent.ACTION_DROP:
 				// Dropped, reassign View to ViewGroup
+				container.d = false;
 				View view = (View) event.getLocalState();
 				ViewGroup owner = (ViewGroup) view.getParent();
 				owner.removeView(view);
 				x = event.getX();
 				y = event.getY();
-				int i = (int) (x * 10 /container.width);
-				int j = (int) (y * 10 /container.width);
-				game.setTile(10 - i, 10 - j, 1);
-					break;
+				int i = (int) (x * game.size / container.width);
+				int j = (int) (y * game.size / container.width);
+				game.setTile(j, i, 1);
+				container.postInvalidate();
+				break;
 			case DragEvent.ACTION_DRAG_ENDED:
 			default:
 				break;
@@ -158,35 +176,34 @@ public class MainActivity extends Activity {
 			return true;
 		}
 	}
-	
-	
-	 class SproutDragListener implements OnDragListener {
 
-		    @Override
-		    public boolean onDrag(View v, DragEvent event) {
-		      int action = event.getAction();
-		      switch (event.getAction()) {
-		      case DragEvent.ACTION_DRAG_STARTED:
-		        // do nothing
-		        break;
-		      case DragEvent.ACTION_DRAG_ENTERED:
-		        break;
-		      case DragEvent.ACTION_DRAG_EXITED:
-		        break;
-		      case DragEvent.ACTION_DROP:
-		        // Dropped, reassign View to ViewGroup
-		        View view = (View) event.getLocalState();
-		        ViewGroup owner = (ViewGroup) view.getParent();
-		        owner.removeView(view);
-		        LinearLayout container = (LinearLayout) v;
-		        container.addView(view);
-		        view.setVisibility(View.VISIBLE);
-		        break;
-		      case DragEvent.ACTION_DRAG_ENDED:
-		      default:
-		        break;
-		      }
-		      return true;
-		    }
-		  }
+	class SproutDragListener implements OnDragListener {
+
+		@Override
+		public boolean onDrag(View v, DragEvent event) {
+
+			switch (event.getAction()) {
+			case DragEvent.ACTION_DRAG_STARTED:
+				// do nothing
+				break;
+			case DragEvent.ACTION_DRAG_ENTERED:
+				break;
+			case DragEvent.ACTION_DRAG_EXITED:
+				break;
+			case DragEvent.ACTION_DROP:
+				// Dropped, reassign View to ViewGroup
+				View view = (View) event.getLocalState();
+				ViewGroup owner = (ViewGroup) view.getParent();
+				owner.removeView(view);
+				RelativeLayout container = (RelativeLayout) v;
+				container.addView(view);
+				view.setVisibility(View.VISIBLE);
+				break;
+			case DragEvent.ACTION_DRAG_ENDED:
+			default:
+				break;
+			}
+			return true;
+		}
+	}
 }
