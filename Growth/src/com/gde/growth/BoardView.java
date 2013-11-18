@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.util.AttributeSet;
@@ -19,7 +21,7 @@ public class BoardView extends View {
 	int size;
 
 	public int x, y;
-	public boolean d;
+	public int d;
 
 	private Paint paint, one, two, note;
 
@@ -38,16 +40,16 @@ public class BoardView extends View {
 		paint.setStyle(Style.FILL_AND_STROKE);
 		paint.setStrokeWidth(3);
 
-		one = new Paint();
-		one.setColor(0x7700BBAA);
-		one.setStyle(Style.FILL);
+		setOne(new Paint());
+		getOne().setColor(0x7700BBAA);
+		getOne().setStyle(Style.FILL);
 
 		two = new Paint();
 		two.setColor(0x77AA00BB);
 		two.setStyle(Style.FILL);
 
 		note = new Paint();
-		note.setColor(0x44FF0000);
+		note.setColor(0xAAFF0000);
 		note.setStyle(Style.FILL_AND_STROKE);
 
 		size = MainActivity.game.size;
@@ -65,17 +67,34 @@ public class BoardView extends View {
 
 	}
 
+	protected Drawable getTile() {
+		tile.setBounds(0, 0, width / size, width / size);
+		tile.getPaint().set(getOne());
+		return tile;
+	}
+
 	public void setRunning(boolean b) {
 		running = b;
 	}
 
-	public void ghostTile(Canvas canvas, int i, int j) {
+	public void ghostTile(Canvas canvas, int i, int j, int pat) {
 		tile.getPaint().set(note);
+		Point[] pattern = MainActivity.game.patterns.get(pat);
+		for (int k = 0; k < pattern.length; k++) {
+			if ((i + pattern[k].x >= 0) && (i + pattern[k].x < size)
+					&& (j + pattern[k].y >= 0) && (j + pattern[k].y < size))
+				if (MainActivity.game.tiles[i + pattern[k].x][j + pattern[k].y] == 0
+						&& MainActivity.game.interference == 0) {
 
-		tile.setBounds((i * width) / size, (j * width) / size,
-				((i + 1) * width) / size, ((j + 1) * width) / size);
+					tile.setBounds(((i + pattern[k].x) * width) / size,
+							((j + pattern[k].y) * width) / size, ((i
+									+ pattern[k].x + 1) * width)
+									/ size, ((j + pattern[k].y + 1) * width)
+									/ size);
 
-		tile.draw(canvas);
+					tile.draw(canvas);
+				}
+		}
 	}
 
 	protected void drawTiles(Canvas canvas) {
@@ -87,7 +106,7 @@ public class BoardView extends View {
 
 				if (t[j][i] == 1) {
 
-					tile.getPaint().set(one);
+					tile.getPaint().set(getOne());
 
 					tile.setBounds((i * width) / size, (j * width) / size,
 							((i + 1) * width) / size, ((j + 1) * width) / size);
@@ -129,9 +148,17 @@ public class BoardView extends View {
 				+ Integer.toString(width), width / 2, width / 2, note);
 
 		drawTiles(canvas);
-		if(d)
-			ghostTile(canvas, x * size / width, y *  size / width);
+		if (d != 0)
+			ghostTile(canvas, x * size / width, y * size / width, d - 1);
 
+	}
+
+	public Paint getOne() {
+		return one;
+	}
+
+	public void setOne(Paint one) {
+		this.one = one;
 	}
 
 }

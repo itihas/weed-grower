@@ -32,13 +32,22 @@ containing a value of this type.
         public static final int ic_launcher=0x7f020000;
         public static final int petal=0x7f020001;
         public static final int shape=0x7f020002;
+        public static final int tile=0x7f020003;
+        public static final int tile2=0x7f020004;
+        public static final int tile3=0x7f020005;
     }
     public static final class id {
         public static final int boardview=0x7f090001;
+        public static final int button_scan=0x7f09000b;
         public static final int myimage1=0x7f090003;
         public static final int myimage2=0x7f090004;
         public static final int myimage3=0x7f090005;
+        public static final int new_devices=0x7f09000a;
+        public static final int paired_devices=0x7f090008;
+        public static final int score_view=0x7f090006;
         public static final int testlist=0x7f090002;
+        public static final int title_new_devices=0x7f090009;
+        public static final int title_paired_devices=0x7f090007;
         public static final int topview=0x7f090000;
     }
     public static final class integer {
@@ -46,6 +55,8 @@ containing a value of this type.
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
+        public static final int device_list=0x7f030001;
+        public static final int device_name=0x7f030002;
     }
     public static final class menu {
         public static final int main=0x7f080000;
@@ -53,7 +64,17 @@ containing a value of this type.
     public static final class string {
         public static final int action_settings=0x7f060001;
         public static final int app_name=0x7f060000;
+        public static final int button_scan=0x7f06000c;
         public static final int hello_world=0x7f060002;
+        public static final int none_found=0x7f060009;
+        public static final int none_paired=0x7f060008;
+        public static final int scanning=0x7f060006;
+        public static final int select_device=0x7f060007;
+        public static final int tile1=0x7f060003;
+        public static final int tile2=0x7f060004;
+        public static final int tile3=0x7f060005;
+        public static final int title_other_devices=0x7f06000b;
+        public static final int title_paired_devices=0x7f06000a;
     }
     public static final class style {
         /** 

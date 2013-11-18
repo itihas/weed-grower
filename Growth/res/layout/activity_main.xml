@@ -13,38 +13,46 @@
 
     <com.gde.growth.BoardView
         android:id="@+id/boardview"
-        android:layout_width="wrap_content"
-        android:layout_height="0dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="2"
         custom:TILESET="1" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/testlist"
-        android:layout_width="wrap_content"
-        android:layout_height="0dip"
-        android:layout_weight="1" >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top" >
 
-        <TextView
+        <ImageView
             android:id="@+id/myimage1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:src="@drawable/tile" />
 
-        <TextView
+        <ImageView
             android:id="@+id/myimage2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
+            android:layout_height="wrap_content"
+            android:src="@drawable/tile2" />
+        
+        <ImageView
             android:id="@+id/myimage3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
-    <!--
-    <com.gde.growth.SproutView
-        android:id="@+id/sproutview_1"
-        android:layout_width="wrap_content"
-        android:layout_height="0dip"
-        android:layout_weight="1" />
-    -->
+            android:layout_height="wrap_content"
+            android:src="@drawable/tile3" />
+        
+        <TextView
+            android:id="@+id/score_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/hello_world"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:textSize="@android:dimen/app_icon_size"
+            android:textStyle="bold" >
+
+        </TextView>
+</LinearLayout>
 
 </LinearLayout>
