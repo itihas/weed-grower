@@ -80,23 +80,33 @@ public class MainActivity extends Activity {
 		startGame();
 	}
 
+        static final int[][] initTiles =
+	{
+	    {3, 3, 1, 0},
+	    {4, 4, 1, 0},
+	    {4, 6, 1, 0},
+	    {5, 5, 1, 0},
+	    {6, 4, 1, 0},
+	    {6, 6, 1, 0},
+	    {7, 7, 1, 0},
+
+	    {13, 13, 2, 0},
+	    {14, 14, 2, 0},
+	    {14, 16, 2, 0},
+	    {15, 15, 2, 0},
+	    {16, 14, 2, 0},
+	    {16, 16, 2, 0},
+	    {17, 17, 2, 0}
+
+	}
+    
 	public void startGame() {
-		game.setTile(3, 3, 1, 0);
-		game.setTile(4, 4, 1, 0);
-		game.setTile(4, 6, 1, 0);
-		game.setTile(5, 5, 1, 0);
-		game.setTile(6, 4, 1, 0);
-		game.setTile(6, 6, 1, 0);
-		game.setTile(7, 7, 1, 0);
 
-		game.setTile(13, 13, 2, 0);
-		game.setTile(14, 14, 2, 0);
-		game.setTile(14, 16, 2, 0);
-		game.setTile(15, 15, 2, 0);
-		game.setTile(16, 14, 2, 0);
-		game.setTile(16, 16, 2, 0);
-		game.setTile(17, 17, 2, 0);
-
+	    for(int i=0; i < 14; i++){
+		
+		game.setTile(initTiles[i][0], initTiles[i][1], initTiles[i][2], initTiles[i][3]);
+	    }
+	    
 		boardThread.start();
 
 		sproutThread.start();
